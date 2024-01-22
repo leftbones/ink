@@ -11,16 +11,16 @@
 #include "darray.h"
 #include "util.h"
 
-void editor_init(Editor* editor) {
+void editor_init(Editor *editor) {
     initscr();
-    cbreak();
+    raw();
     noecho();
     nodelay(stdscr, TRUE);
     refresh();
 
     unsigned int rows, cols;
     getmaxyx(stdscr, rows, cols);
-    WINDOW* win = newwin(rows, cols, 0, 0);
+    WINDOW *win = newwin(rows, cols, 0, 0);
     editor->window = win;
     editor->rows = rows;
     editor->cols = cols;
@@ -28,8 +28,8 @@ void editor_init(Editor* editor) {
     editor_redraw_screen(editor);
 }
 
-void editor_deinit(Editor* editor) {
-    Buffer* buf = editor->buffer;
+void editor_deinit(Editor *editor) {
+    Buffer *buf = editor->buffer;
     free(buf->data.items);
     free(buf->lines.items);
     buf->data.items = NULL;
@@ -37,20 +37,20 @@ void editor_deinit(Editor* editor) {
     endwin();
 }
 
-Line* editor_get_line(Editor* editor, int row) {
-    Buffer* buf = editor->buffer;
-    Cursor* cur = editor->cursor;
+Line *editor_get_line(Editor *editor, int row) {
+    Buffer *buf = editor->buffer;
+    Cursor *cur = editor->cursor;
     return &buf->lines.items[row];
 }
 
-Line* editor_get_cursor_line(Editor* editor) {
-    Buffer* buf = editor->buffer;
-    Cursor* cur = editor->cursor;
+Line *editor_get_cursor_line(Editor *editor) {
+    Buffer *buf = editor->buffer;
+    Cursor *cur = editor->cursor;
     return &buf->lines.items[cur->row];
 }
 
-void editor_evaluate_lines(Editor* editor) {
-    Buffer* buf = editor->buffer;
+void editor_evaluate_lines(Editor *editor) {
+    Buffer *buf = editor->buffer;
     buf->lines.count = 0;
 
     size_t pos = 0;
@@ -68,20 +68,20 @@ void editor_evaluate_lines(Editor* editor) {
     }
 }
 
-void editor_process_key(Editor* editor, int key) {
+void editor_process_key(Editor *editor, int key) {
     switch (key) {
-        case KC_Q: editor->should_exit = true; break;
-        case KC_H: editor_move_cursor(editor, -1, 0); break;
-        case KC_J: editor_move_cursor(editor, 0, 1); break;
-        case KC_K: editor_move_cursor(editor, 0, -1); break;
-        case KC_L: editor_move_cursor(editor, 1, 0); break;
+        case KEY(CTRL('q')): editor->should_exit = true; break;
+        case KEY('h'): editor_move_cursor(editor, -1, 0); break;
+        case KEY('j'): editor_move_cursor(editor, 0, 1); break;
+        case KEY('k'): editor_move_cursor(editor, 0, -1); break;
+        case KEY('l'): editor_move_cursor(editor, 1, 0); break;
     }
 
     editor->last_key = key;
 }
 
-bool editor_open_file(Editor* editor, char* file_path) {
-    Buffer* buf = editor->buffer;
+bool editor_open_file(Editor *editor, char *file_path) {
+    Buffer *buf = editor->buffer;
     
     bool result = true;
     int fd = -1;
@@ -132,9 +132,9 @@ bool editor_open_file(Editor* editor, char* file_path) {
         return result;
 }
 
-void editor_move_cursor(Editor* editor, int x_dir, int y_dir) {
-    Buffer* buf = editor->buffer;
-    Cursor* cur = editor->cursor;
+void editor_move_cursor(Editor *editor, int x_dir, int y_dir) {
+    Buffer *buf = editor->buffer;
+    Cursor *cur = editor->cursor;
     int rows = editor->rows;
     int cols = editor->cols;
 
@@ -156,12 +156,18 @@ void editor_move_cursor(Editor* editor, int x_dir, int y_dir) {
 
     cur->row = dy;
     cur->col = dx;
+
+    editor_scroll_view(editor);
 }
 
-void editor_redraw_screen(Editor* editor) {
-    WINDOW* win = editor->window;
-    Buffer* buf = editor->buffer;
-    Cursor* cur = editor->cursor;
+void editor_scroll_view(Editor *editor) {
+    
+}
+
+void editor_redraw_screen(Editor *editor) {
+    WINDOW *win = editor->window;
+    Buffer *buf = editor->buffer;
+    Cursor *cur = editor->cursor;
 
     editor_draw_buffer(editor);
 
@@ -169,10 +175,10 @@ void editor_redraw_screen(Editor* editor) {
     wrefresh(win);
 }
 
-void editor_draw_buffer(Editor* editor) {
-    WINDOW* win = editor->window;
-    Buffer* buf = editor->buffer;
-    Cursor* cur = editor->cursor;
+void editor_draw_buffer(Editor *editor) {
+    WINDOW *win = editor->window;
+    Buffer *buf = editor->buffer;
+    Cursor *cur = editor->cursor;
     int rows = editor->rows;
     int cols = editor->cols;
 
@@ -203,12 +209,13 @@ void editor_draw_buffer(Editor* editor) {
     mvwaddstr(win, rows - 1, 0, editor_mode);
 
     char cursor_pos[16];
-    snprintf(cursor_pos, sizeof cursor_pos, "%lu, %lu ", cur->row, cur->col);
+    / *snprintf(cursor_pos, sizeof cursor_pos, "%lu, %lu ", cur->row, cur->col); */
+    snprintf(cursor_pos, sizeof cursor_pos, "%lu, %lu ", buf->x_view, buf->y_view);
     mvwaddstr(win, rows - 1, cols - strlen(cursor_pos) - 8, cursor_pos);
 
     char last_key[8];
-    char* key_str = keystr(editor->last_key);
-    if (strsame(key_str, "NOPE")) {
+    char *key_str = keystr(editor->last_key);
+    if (strsame(key_str, "UNKNOWN")) {
         snprintf(last_key, sizeof last_key, "%c ", (char)editor->last_key);
     } else {
         snprintf(last_key, sizeof last_key, "%s ", key_str);

@@ -8,6 +8,6 @@
 #define min(a, b) ((a) <= (b) ? (a) : (b))
 #define clamp(n, min, max) (n < min ? min : n) > max ? max : (n < min ? min : n)
 
-char* keystr(int keycode);
+char *keystr(int keycode);
 
 #endif

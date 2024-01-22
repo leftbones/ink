@@ -23,7 +23,7 @@ void print_version() {
     fprintf(stderr, "github.com/leftbones/ink\n");
 }
 
-int main(int argc, char* argv[]) {
+int main(int argc, char *argv[]) {
     // Setup
     int result = 0;
 
@@ -35,9 +35,9 @@ int main(int argc, char* argv[]) {
     };
 
     // Arguments
-    char* file_path = NULL;
+    char *file_path = NULL;
     if (argc > 1) {
-        char* arg = argv[1];
+        char *arg = argv[1];
 
         if (strsame(arg, "-h") || strsame(arg, "--help")) {
             print_usage();
