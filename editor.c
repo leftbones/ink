@@ -156,25 +156,6 @@ void editor_move_cursor(Editor *editor, int x_dir, int y_dir) {
 
     cur->row = dy;
     cur->col = dx;
-
-    editor_scroll_view(editor);
-}
-
-void editor_scroll_view(Editor *editor) {
-    Buffer *buf = editor->buffer;
-    Cursor *cur = editor->cursor;
-    int rows = editor->rows;
-    int cols = editor->cols;
-
-    if (cur->row < buf->y_view) {
-        buf->y_view = cur->row;
-        cur->row += 1;
-    }
-
-    if (cur->row >= rows - 5) {
-        buf->y_view += 1;
-        cur->row -= 1;
-    }
 }
 
 void editor_redraw_screen(Editor *editor) {
@@ -203,7 +184,7 @@ void editor_draw_buffer(Editor *editor) {
     // Lines
     Lines lines = buf->lines;
     for (int i = 0; i < rows - 1; i++) {
-        size_t row = buf->y_view + i;
+        size_t row = i;
         if (row < lines.count) {
             wmove(win, i, 0);
             wclrtoeol(win);
@@ -223,8 +204,7 @@ void editor_draw_buffer(Editor *editor) {
     mvwaddstr(win, rows - 1, 0, editor_mode);
 
     char cursor_pos[16];
-    // snprintf(cursor_pos, sizeof cursor_pos, "%lu, %lu ", cur->row, cur->col);
-    snprintf(cursor_pos, sizeof cursor_pos, "%i, %i ", buf->x_view, buf->y_view);
+    snprintf(cursor_pos, sizeof cursor_pos, "%lu, %lu ", cur->row, cur->col);
     mvwaddstr(win, rows - 1, cols - strlen(cursor_pos) - 8, cursor_pos);
 
     char last_key[8];
