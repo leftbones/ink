@@ -24,8 +24,8 @@ typedef struct {
     char* name;
     Data data;
     Lines lines;
-    size_t y_view;
-    size_t x_view;
+    int y_view;
+    int x_view;
 } Buffer;
 
 Buffer* new_buffer();
