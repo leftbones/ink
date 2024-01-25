@@ -14,3 +14,5 @@ Ink is written in C to be fast and light, and only relies on ncurses for it's in
 - Split buffers
 - Integrated shell
 - Hyperlinks
+
+See NOTES.md for more planned features.
