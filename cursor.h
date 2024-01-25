@@ -9,6 +9,6 @@ typedef struct {
     size_t hint;
 } Cursor;
 
-Cursor* new_cursor(unsigned int row, unsigned int col);
+Cursor* new_cursor(size_t row, size_t col);
 
 #endif

@@ -1,4 +1,20 @@
+#include <limits.h>
 #include "keycodes.h"
+#include "util.h"
+
+Point point(size_t y, size_t x) {
+    Point pt = {
+        .y = y,
+        .x = x,
+    };
+    return pt;
+}
+
+int numlen(int n) {
+    if (n < 0) return numlen((n == INT_MIN) ? INT_MAX: -n);
+    if (n < 10) return 1;
+    return 1 + numlen(n / 10);
+}
 
 char *keystr(int keycode) {
     switch (keycode) {
@@ -140,6 +156,6 @@ char *keystr(int keycode) {
         case KEY('/'):      return "/";
         case KEY('?'):      return "?";
 
-        default:            return "UNKNOWN";
+        default:            return "UNKNOWN";   // Unrecognized keycode, should never happen, this is just here to make the compiler happy
     }
 }

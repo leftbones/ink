@@ -1,3 +1,6 @@
+// Dynamic Array
+// Borrowed (aka shamelessly stolen) from https://github.com/tsoding/noed
+
 #ifndef DARRAY_H
 #define DARRAY_H
 

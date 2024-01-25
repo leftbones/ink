@@ -29,7 +29,6 @@ int main(int argc, char *argv[]) {
 
     Editor editor = {
         .buffer = new_buffer(),
-        .cursor = new_cursor(0, 0),
         .mode = "Normal",
         .last_key = 0
     };
