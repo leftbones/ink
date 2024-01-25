@@ -26,6 +26,7 @@ void editor_process_key(Editor *editor, int key);
 bool editor_open_file(Editor *editor, char *file_path);
 void editor_move_cursor(Editor *editor, int x_dir, int y_dir);
 void editor_scroll_view(Editor *editor);
+void editor_scroll_view(Editor *editor);
 void editor_redraw_screen(Editor *editor);
 void editor_draw_buffer(Editor *editor);
 

@@ -24,6 +24,8 @@ typedef struct {
     char* name;
     Data data;
     Lines lines;
+    int offset_x;
+    int offset_y;
 } Buffer;
 
 Buffer* new_buffer();

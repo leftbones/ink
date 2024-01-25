@@ -40,13 +40,13 @@ void editor_deinit(Editor *editor) {
 Line *editor_get_line(Editor *editor, int row) {
     Buffer *buf = editor->buffer;
     Cursor *cur = editor->cursor;
-    return &buf->lines.items[row];
+    return &buf->lines.items[row + buf->offset_y];
 }
 
 Line *editor_get_cursor_line(Editor *editor) {
     Buffer *buf = editor->buffer;
     Cursor *cur = editor->cursor;
-    return &buf->lines.items[cur->row];
+    return &buf->lines.items[cur->row + buf->offset_y];
 }
 
 void editor_evaluate_lines(Editor *editor) {
@@ -156,6 +156,26 @@ void editor_move_cursor(Editor *editor, int x_dir, int y_dir) {
 
     cur->row = dy;
     cur->col = dx;
+
+    editor_scroll_view(editor);
+}
+
+void editor_scroll_view(Editor *editor) {
+    Buffer *buf = editor->buffer;
+    Cursor *cur = editor->cursor;
+
+    int bottom = editor->rows - 1;
+
+    /* while (cur->row <= (buf->offset_y + 5) - 1 && buf->offset_y > 0) { */
+    while (cur->row <= 4 && buf->offset_y > 0) {
+        buf->offset_y -= 1;
+        cur->row += 1;
+    }
+
+    while (cur->row >= (bottom - 5) + 1 && (buf->offset_y + (editor->rows - 1)) < buf->lines.count) {
+        buf->offset_y += 1;
+        cur->row -= 1;
+    }
 }
 
 void editor_redraw_screen(Editor *editor) {
@@ -184,7 +204,7 @@ void editor_draw_buffer(Editor *editor) {
     // Lines
     Lines lines = buf->lines;
     for (int i = 0; i < rows - 1; i++) {
-        size_t row = i;
+        size_t row = i + buf->offset_y;
         if (row < lines.count) {
             wmove(win, i, 0);
             wclrtoeol(win);

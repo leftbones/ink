@@ -4,7 +4,7 @@ char *keystr(int keycode) {
     switch (keycode) {
         // Special Keys
         case KEY_TAB:       return "Tab";
-        case KEY_ENTER:     return "Enter";
+        case KEY_RETURN:    return "Return";
         case KEY_ESCAPE:    return "Esc";
         case KEY_SPACE:     return "Space";
         case KEY_DELETE:    return "Delete";
