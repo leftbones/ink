@@ -168,7 +168,7 @@ void editor_move_cursor(Editor *editor, int x_dir, int y_dir) {
 
     int cur_line_len = max((int)editor_get_cursor_line(editor)->len - 1, 0);
     dx = clamp(dx, editor->margin_l, min(cur_line_len + editor->margin_l, cols - editor->margin_r - 1));
-    dy = clamp(dy, editor->margin_t, min(buf->lines.count - 1, rows - editor->margin_b - 1));
+    dy = clamp(dy, (int)editor->margin_t, min(buf->lines.count - 1, rows - editor->margin_b - 1));
 
     if (x_dir != 0) {
         cur->hint = dx;
